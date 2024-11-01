@@ -307,6 +307,9 @@ public class HitboxPlus implements ModInitializer {
 				config.prefix.oreolist.add(prefix); //Add his prefix to the "prefix to town" list
 			}
 		}
+
+		AutoConfig.getConfigHolder(ModConfig.class).setConfig(config);
+		AutoConfig.getConfigHolder(ModConfig.class).save();
     }
 
 
