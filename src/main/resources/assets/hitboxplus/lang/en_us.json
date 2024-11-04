@@ -17,8 +17,6 @@
 
   "text.autoconfig.hitboxplus.option.isPlayerConfigEnabled.@PrefixText": "§f§lPlayer Config",
   "text.autoconfig.hitboxplus.option.isPlayerConfigEnabled": "Enable player config",
-  "text.autoconfig.hitboxplus.option.friend.areWaypointsTimed": "Enable waypoint timer deletion",
-  "text.autoconfig.hitboxplus.option.friend.friendWaypointTimer": "Waypoint deletion timer",
   "text.autoconfig.hitboxplus.option.friend": "§a§l Friends",
   "text.autoconfig.hitboxplus.option.friend.list": "§l Friend List",
   "text.autoconfig.hitboxplus.option.friend.color": "Color",
@@ -143,10 +141,26 @@
   "text.autoconfig.hitboxplus.option.pingTowns.limitRange.@Tooltip": "Set an area within which waypoints can appear",
   "text.autoconfig.hitboxplus.option.specialTowns.showNotifications.@Tooltip": "Show a notification when a special towns chunk gets capped",
 
-  "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "§lAccept location Waypoints from friends",
-  "text.autoconfig.hitboxplus.option.friend.acceptPings": "§lAccept position pings from friends",
-  "text.autoconfig.hitboxplus.option.friend.pingWaypointTimer": "Ping waypoint timer",
-  "text.autoconfig.hitboxplus.option.friend.deletePreviousPing": "Delete player waypoint after new one",
+  "text.autoconfig.hitboxplus.option.coordSharing": "§b§l Waypoint sharing",
+
+  "text.autoconfig.hitboxplus.option.coordSharing.locationSharing": "§f Player location sharing",
+  "text.autoconfig.hitboxplus.option.coordSharing.locationSharing.acceptCoordsFromFriends": "§lAccept Waypoints from friends",
+  "text.autoconfig.hitboxplus.option.coordSharing.locationSharing.areWaypointsTimed": "Enable waypoint timer deletion",
+  "text.autoconfig.hitboxplus.option.coordSharing.locationSharing.friendWaypointTimer": "Waypoint deletion timer",
+
+  "text.autoconfig.hitboxplus.option.coordSharing.pingSharing": "§f Ping location sharing",
+  "text.autoconfig.hitboxplus.option.coordSharing.pingSharing.acceptPings": "§lAccept position pings from friends",
+  "text.autoconfig.hitboxplus.option.coordSharing.pingSharing.deletePreviousPing": "Delete player waypoint after new one",
+  "text.autoconfig.hitboxplus.option.coordSharing.pingSharing.pingWaypointTimer": "Ping waypoint timer",
+  "text.autoconfig.hitboxplus.option.coordSharing.pingSharing.pingsInChat": "Let pings show up in chat",
+
+
+  "text.autoconfig.hitboxplus.option.coordSharing.acceptCoordsFromAlly": "Accept waypoints from Ally Chat",
+  "text.autoconfig.hitboxplus.option.coordSharing.acceptCoordsFromNation": "Accept waypoints from Nation Chat",
+  "text.autoconfig.hitboxplus.option.coordSharing.acceptCoordsFromTown": "Accept waypoints from Town Chat",
+  "text.autoconfig.hitboxplus.option.coordSharing.acceptCoordsFromLocal": "Accept waypoints from Local Chat",
+
+
 
   "text.autoconfig.hitboxplus.option.enemy.acceptCoordsFromFriends": "OUT OF ORDER",
   "text.autoconfig.hitboxplus.option.enemy.areWaypointsTimed": "OUT OF ORDER",

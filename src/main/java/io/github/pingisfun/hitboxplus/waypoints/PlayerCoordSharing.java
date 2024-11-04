@@ -25,7 +25,7 @@ public class PlayerCoordSharing {
         //########################################################################
 
 
-        if (!config.friend.acceptCoordsFromFriends || !config.friend.list.contains(sender.getName()) ||
+        if (!config.coordSharing.locationSharing.acceptCoordsFromFriends || !config.friend.list.contains(sender.getName()) ||
                 !message.contains("my coords (")) {
             return;
         }
@@ -40,10 +40,9 @@ public class PlayerCoordSharing {
         // The reason the function that detects player code doesn't work is because many servers in order to
         // filter/redirect messages they convert them into server messages . Nodes does this too;
 
-        if (message == null || !config.friend.acceptCoordsFromFriends || !message.contains("my coords (")) {
+        if (message == null || !config.coordSharing.locationSharing.acceptCoordsFromFriends || !message.contains("my coords (")) {
             return;
         }
-
 
         for (String nick : config.friend.list) {
 
@@ -53,9 +52,21 @@ public class PlayerCoordSharing {
 
             handleWaypointCreation(message,nick);
 
-            break;
+            return;
         }
 
+        if (message.contains("[Local]") && config.coordSharing.acceptCoordsFromLocal){
+            handleWaypointCreation(message, "local");
+        }
+        else if (message.contains("[Town]") && config.coordSharing.acceptCoordsFromTown){
+            handleWaypointCreation(message, "town");
+        }
+        else if (message.contains("[Nation]") && config.coordSharing.acceptCoordsFromNation){
+            handleWaypointCreation(message, "nation");
+        }
+        else if (message.contains("[Ally]") && config.coordSharing.acceptCoordsFromAlly){
+            handleWaypointCreation(message, "ally");
+        }
     }
 
     public static Boolean handlePlayerPing(String message, GameProfile sender){
@@ -63,7 +74,7 @@ public class PlayerCoordSharing {
         // The reason the function that detects player code doesn't work is because many servers in order to
         // filter/redirect messages they convert them into server messages . Nodes does this too;
 
-        if (message == null || !config.friend.acceptPings || !message.contains("pinged location {")
+        if (message == null || !config.coordSharing.pingSharing.acceptPings || !message.contains("pinged location {")
         || !config.friend.list.contains(sender.getName())) {
             return true;
         }
@@ -79,10 +90,11 @@ public class PlayerCoordSharing {
         // The reason the function that detects player code doesn't work is because many servers in order to
         // filter/redirect messages they convert them into server messages . Nodes does this too;
 
-        if (message == null || !config.friend.acceptPings || !message.contains("pinged location {")) {
+        if (message == null || !config.coordSharing.pingSharing.acceptPings || !message.contains("pinged location {")) {
             return true;
         }
 
+        boolean showMessage = config.coordSharing.pingSharing.pingsInChat;
 
         for (String nick : config.friend.list) {
 
@@ -92,7 +104,24 @@ public class PlayerCoordSharing {
 
             handlePingCreation(message,nick);
 
-            return false;
+            return showMessage;
+        }
+
+        if (message.contains("[Local]") && config.coordSharing.acceptCoordsFromLocal){
+            handleWaypointCreation(message, "local");
+            return showMessage;
+        }
+        else if (message.contains("[Town]") && config.coordSharing.acceptCoordsFromTown){
+            handleWaypointCreation(message, "town");
+            return showMessage;
+        }
+        else if (message.contains("[Nation]") && config.coordSharing.acceptCoordsFromNation){
+            handleWaypointCreation(message, "nation");
+            return showMessage;
+        }
+        else if (message.contains("[Ally]") && config.coordSharing.acceptCoordsFromAlly){
+            handleWaypointCreation(message, "ally");
+            return showMessage;
         }
 
         return true;
@@ -134,7 +163,7 @@ public class PlayerCoordSharing {
         Waypoint waypoint = getWaypointList().get(getWaypointList().size() - 1);
         waypoint.setOneoffDestination(true);
 
-        deleteWaypointInTime(waypoint, config.friend.friendWaypointTimer);
+        deleteWaypointInTime(waypoint, config.coordSharing.locationSharing.friendWaypointTimer);
     }
 
     private static void handlePingCreation(String message, String playerName) {
@@ -170,7 +199,7 @@ public class PlayerCoordSharing {
         Waypoint waypoint = getWaypointList().get(getWaypointList().size() - 1);
         waypoint.setOneoffDestination(true);
 
-        if (config.friend.deletePreviousPing) {
+        if (config.coordSharing.pingSharing.deletePreviousPing) {
 
             if (HitboxPlusClient.pings.containsKey(nick)){
                 deleteWaypoint(HitboxPlusClient.pings.get(nick));
@@ -179,7 +208,7 @@ public class PlayerCoordSharing {
             HitboxPlusClient.pings.put(nick,waypoint);
         }
 
-        deleteWaypointInTime(waypoint, config.friend.pingWaypointTimer);
+        deleteWaypointInTime(waypoint, config.coordSharing.pingSharing.pingWaypointTimer);
     }
 
 }

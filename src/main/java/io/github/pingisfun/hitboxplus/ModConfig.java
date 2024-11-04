@@ -33,6 +33,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category(value = "players")
     public boolean isPlayerConfigEnabled = true;
 
+    @ConfigEntry.Category(value = "players")
+    @ConfigEntry.Gui.CollapsibleObject
+    public PlayerWaypointConfig coordSharing = new PlayerWaypointConfig();
 
     @ConfigEntry.Category(value = "players")
     @ConfigEntry.Gui.CollapsibleObject
@@ -195,17 +198,35 @@ public class ModConfig implements ConfigData {
         public int alpha = 10;
     }
 
-    public static class PlayerListConfig {
+    public static class PlayerWaypointConfig {
 
+        @ConfigEntry.Gui.CollapsibleObject
+        public PlayerLocation locationSharing = new PlayerLocation();
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public PingLocation pingSharing = new PingLocation();
+
+        public boolean acceptCoordsFromAlly = false;
+        public boolean acceptCoordsFromNation = true;
+        public boolean acceptCoordsFromTown = true;
+        public boolean acceptCoordsFromLocal = false;
+    }
+
+    public static class PlayerLocation{
         public boolean acceptCoordsFromFriends = true; //Add the setting to accept coordinates from teammates
+        public int friendWaypointTimer = 70; //Add the setting to accept coordinates from teammates
+    }
 
-        public int friendWaypointTimer = 40; //Add the setting to accept coordinates from teammates
-
+    public static class PingLocation{
         public boolean acceptPings = true;
+        public int pingWaypointTimer = 6;
         public boolean deletePreviousPing = true;
+        public boolean pingsInChat = false;
+    }
 
-        public int pingWaypointTimer = 3;
 
+
+    public static class PlayerListConfig {
 
         public PlayerListConfig(int color) {
             this.color = color; //The color picker doesn't work : (
