@@ -78,23 +78,26 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.CollapsibleObject
     public MiscEntityDropdown misc = new MiscEntityDropdown();
 
-    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Category(value = "teamColor")
+    public boolean experimental = true;
+
+    @ConfigEntry.Category(value = "teamColor")
     @ConfigEntry.Gui.CollapsibleObject  //The sections with friendly teams
     public PlayerOreoListConfig friendteam = new PlayerOreoListConfig();
 
-    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Category(value = "teamColor")
     @ConfigEntry.Gui.CollapsibleObject //The section with enemy teams
     public PlayerOreoListConfig enemyteam = new PlayerOreoListConfig();
 
-    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Category(value = "teamColor")
     @ConfigEntry.Gui.CollapsibleObject //The prefix to team name list
     public PlayerOreoListConfig prefix = new PlayerOreoListConfig();
 
-    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Category(value = "flagToWaypoint")
     @ConfigEntry.Gui.CollapsibleObject//The huge section with the flag to waypoint settings
     public Oreo pingTowns = new Oreo();
 
-    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Category(value = "flagToWaypoint")
     @ConfigEntry.Gui.CollapsibleObject //Special towns section for sounds and notifications
     public Sounds specialTowns = new Sounds();
 

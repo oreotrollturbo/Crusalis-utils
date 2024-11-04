@@ -21,8 +21,12 @@ import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.text.Text;
 
+import javax.print.attribute.standard.MediaSize;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 
 public class ColorUtil {
@@ -33,7 +37,7 @@ public class ColorUtil {
     public static Color getEntityColor(Entity entity) {
         ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
-
+        //Player config
         if (entity instanceof PlayerEntity && config.isPlayerConfigEnabled) {
             if (entity instanceof ClientPlayerEntity) {
                 return ColorUtil.decode(config.self.color, config.self.alpha);
@@ -45,34 +49,45 @@ public class ColorUtil {
 
                 String username = entity.getName().getString();
 
-
-                if (player.isTeammate(entity)){
-                    return ColorUtil.decode(config.friend.color, config.friend.alpha);
-                }
-                else if (config.friend.list.contains((username))) {
+                // Default friend logic
+                if (config.friend.list.contains((username))) {
                     return ColorUtil.decode(config.friend.color, config.friend.alpha);
                 }
                 else if (config.enemy.list.contains((username))) {
                     return ColorUtil.decode(config.enemy.color, config.enemy.alpha);
                 }
 
-                if (entity.getScoreboardTeam() != null){
-                    String teamName = entity.getScoreboardTeam().getName();
 
-                    if (config.friendteam.oreolist.contains(teamName)){ //these check for the players team
+                //Custom Team logic
+                if (config.experimental){
+
+                    return ColorUtil.decode(getPlayerPrefixColorHex((OtherClientPlayerEntity) entity),config.friend.alpha);
+
+
+                } else {
+                    if (player.isTeammate(entity)){
                         return ColorUtil.decode(config.friend.color, config.friend.alpha);
                     }
-                    else if (config.enemyteam.oreolist.contains(teamName)){ //They are independent if statements so that if someone is marked as an enemy while being in a friendly team he is still marked red
-                        return ColorUtil.decode(config.enemy.color, config.enemy.alpha);
+                    else if (entity.getScoreboardTeam() != null){
+                        String teamName = entity.getScoreboardTeam().getName();
+
+                        if (config.friendteam.oreolist.contains(teamName)){ //these check for the players team
+                            return ColorUtil.decode(config.friend.color, config.friend.alpha);
+                        }
+                        else if (config.enemyteam.oreolist.contains(teamName)){
+                            return ColorUtil.decode(config.enemy.color, config.enemy.alpha);
+                        }
                     }
                 }
 
 
-                else {
-                    return ColorUtil.decode(config.neutral.color, config.neutral.alpha);
-                }
+                return ColorUtil.decode(config.neutral.color, config.neutral.alpha);
+
             }
-        } else if (entity instanceof EnderDragonEntity && config.enderDragon.isEnabled && config.enderDragon.boxHitbox) {
+        }
+
+        // Entity config
+        else if (entity instanceof EnderDragonEntity && config.enderDragon.isEnabled && config.enderDragon.boxHitbox) {
             return ColorUtil.decode(config.enderDragon.color, config.enderDragon.alpha);
         } else if (entity instanceof HostileEntity && config.hostile.isEnabled) {
             return ColorUtil.decode(config.hostile.color, config.hostile.alpha);
@@ -142,5 +157,78 @@ public class ColorUtil {
     private static boolean isMiscEntity(Entity entity) {
         return entity instanceof AreaEffectCloudEntity || entity instanceof ExperienceOrbEntity || entity instanceof EyeOfEnderEntity || entity instanceof FallingBlockEntity || entity instanceof ItemEntity || entity instanceof TntEntity || entity instanceof EndCrystalEntity;
 
+    }
+
+
+
+    public static int getPlayerPrefixColorHex(PlayerEntity player) {
+        Text displayName = player.getDisplayName();
+
+        // Search through each sibling to find the prefix color
+        for (Text sibling : displayName.getSiblings()) {
+
+            MinecraftClient.getInstance().player.sendMessage(Text.of(sibling.toString()));
+
+            if (sibling.toString().contains("§")){
+
+                int color = mcColorCodesToHex(sibling.toString());
+
+                if (color == 5){
+                    continue;
+                }
+
+                MinecraftClient.getInstance().player.sendMessage(Text.of(String.valueOf(color)));
+
+                return color;
+            }
+        }
+
+        MinecraftClient.getInstance().player.sendMessage(Text.of("Defaulting to white"));
+
+        // Default to white if no color is found
+        return 0xFFFFFF;
+    }
+
+
+
+    private static final Map<Character, Integer> COLOR_CODE_TO_INT = new HashMap<>();
+
+    static {
+        COLOR_CODE_TO_INT.put('0', 0x000000); // Black
+        COLOR_CODE_TO_INT.put('1', 0x0000AA); // Dark Blue
+        COLOR_CODE_TO_INT.put('2', 0x00AA00); // Dark Green
+        COLOR_CODE_TO_INT.put('3', 0x00AAAA); // Dark Aqua
+        COLOR_CODE_TO_INT.put('4', 0xAA0000); // Dark Red
+        COLOR_CODE_TO_INT.put('5', 0xAA00AA); // Dark Purple
+        COLOR_CODE_TO_INT.put('6', 0xFFAA00); // Gold
+        COLOR_CODE_TO_INT.put('7', 0xAAAAAA); // Gray
+        COLOR_CODE_TO_INT.put('8', 0x555555); // Dark Gray
+        COLOR_CODE_TO_INT.put('9', 0x5555FF); // Blue
+        COLOR_CODE_TO_INT.put('a', 0x55FF55); // Green
+        COLOR_CODE_TO_INT.put('b', 0x55FFFF); // Aqua
+        COLOR_CODE_TO_INT.put('c', 0xFF5555); // Red
+        COLOR_CODE_TO_INT.put('d', 0xFF55FF); // Light Purple
+        COLOR_CODE_TO_INT.put('e', 0xFFFF55); // Yellow
+        COLOR_CODE_TO_INT.put('f', 0xFFFFFF); // White
+    }
+
+    public static int mcColorCodesToHex(String text) {
+        int color = 5;
+        boolean colorCode = false;
+
+        for (char c : text.toCharArray()) {
+            if (colorCode) {
+                if (COLOR_CODE_TO_INT.get(c) == null){
+                    colorCode = false;
+                    continue;
+                }
+                color = COLOR_CODE_TO_INT.get(c);
+                break;
+            } else if (c == '§') {
+                colorCode = true;
+            }
+        }
+
+        return color;
     }
 }

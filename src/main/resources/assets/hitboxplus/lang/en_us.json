@@ -104,8 +104,9 @@
   "text.autoconfig.hitboxplus.option.misc.tridentEntity.alpha": "Transparency",
 
 
-  "text.autoconfig.hitboxplus.option.friendteam": "§2§l Friendly Teams (Hitbox color)",
-  "text.autoconfig.hitboxplus.option.enemyteam": "§4§l Enemy Teams (Hitbox color)",
+  "text.autoconfig.hitboxplus.option.experimental": "§l Automatic color detection",
+  "text.autoconfig.hitboxplus.option.friendteam": "§2§l Friendly Teams",
+  "text.autoconfig.hitboxplus.option.enemyteam": "§4§l Enemy Teams",
   "text.autoconfig.hitboxplus.option.friendteam.list": "Friendly Team List",
   "text.autoconfig.hitboxplus.option.enemyteam.list": "Enemy Team List",
   "text.autoconfig.hitboxplus.option.friendteam.color": "Color",
@@ -113,8 +114,9 @@
   "text.autoconfig.hitboxplus.option.enemyteam.color": "Color",
   "text.autoconfig.hitboxplus.option.enemyteam.alpha": "Transparency",
 
-  "text.autoconfig.hitboxplus.category.oreo": "Oreo's Modification",
-  "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and their team name (Hitbox color)",
+  "text.autoconfig.hitboxplus.category.teamColor": "Team Hitbox colors",
+  "text.autoconfig.hitboxplus.category.flagToWaypoint": "Flag to waypoint",
+  "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and their team name",
   "text.autoconfig.hitboxplus.option.prefix.oreolist": "Prefix List",
   "text.autoconfig.hitboxplus.option.friendteam.oreolist": "Friendly Teams List",
   "text.autoconfig.hitboxplus.option.enemyteam.oreolist": "Enemy Teams List",
