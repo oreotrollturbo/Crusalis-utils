@@ -167,8 +167,6 @@ public class ColorUtil {
         // Search through each sibling to find the prefix color
         for (Text sibling : displayName.getSiblings()) {
 
-            MinecraftClient.getInstance().player.sendMessage(Text.of(sibling.toString()));
-
             if (sibling.toString().contains("§")){
 
                 int color = mcColorCodesToHex(sibling.toString());
@@ -177,13 +175,10 @@ public class ColorUtil {
                     continue;
                 }
 
-                MinecraftClient.getInstance().player.sendMessage(Text.of(String.valueOf(color)));
 
                 return color;
             }
         }
-
-        MinecraftClient.getInstance().player.sendMessage(Text.of("Defaulting to white"));
 
         // Default to white if no color is found
         return 0xFFFFFF;

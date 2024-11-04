@@ -222,13 +222,6 @@ public class HitboxPlus implements ModInitializer {
 
 	}
 
-	private static void displayCustomMessage(String text) { //This function isnt very used might delete
-		// Send your custom message to the client chat.
-		if (MinecraftClient.getInstance().player != null) {
-			MinecraftClient.getInstance().player.sendMessage(Text.literal(text));
-		}
-	}
-
 	private static void addTeam(MinecraftClient clientPlayer) throws InterruptedException { //The code to add a team to your list
 
         if (!clientPlayer.getEntityRenderDispatcher().shouldRenderHitboxes()) { //If hitboxes are off dont do anything
