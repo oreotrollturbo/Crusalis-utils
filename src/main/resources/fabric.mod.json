@@ -1,50 +1,48 @@
+
 {
-  "schemaVersion": 1,
-  "id": "hitboxplus",
-  "version": "${version}",
+"schemaVersion": 1,
+"id": "hitboxplus",
+"version": "${version}",
 
-  "name": "Crusalis utils",
-  "description": "A modified version of Hitbox+ with a lot of additions for Crusalis by oreotrollturbo.",
-  "authors": [
-    "Made by oreotrollturbo"
-  ],
-  "contributors": [
-    "PingIsFun for HitboxPlus",
-    "tsuki and Error 110 for their amazing help"
+"name": "Crusalis utils",
+"description": "A modified version of Hitbox+ with a lot of additions for Crusalis by oreotrollturbo.",
+"authors": [
+"Made by oreotrollturbo"
+],
+"contributors": [
+"PingIsFun for HitboxPlus",
+"tsuki and Error 110 for their amazing help"
 
-  ],
-  "contact": {
-    "sources": "https://github.com/PingIsFun/HitBoxPlus",
-    "issues": "https://github.com/PingIsFun/HitBoxPlus/issues"
-  },
+],
+"contact": {
+"sources": "https://github.com/PingIsFun/HitBoxPlus",
+"issues": "https://github.com/PingIsFun/HitBoxPlus/issues"
+},
 
-  "license": "MIT",
-  "icon": "assets/hitboxplus/icon.png",
+"license": "MIT",
+"icon": "assets/hitboxplus/icon.png",
 
-  "environment": "client",
-  "entrypoints": {
-    "main": [
-      "io.github.pingisfun.hitboxplus.HitboxPlus"
-    ],
-    "client": [
-      "io.github.pingisfun.hitboxplus.HitboxPlusClient"
-    ],
-    "modmenu": [
-      "io.github.pingisfun.hitboxplus.integration.ModMenuIntegration"
-    ]
-  },
-  "mixins": [
-    "hitboxplus.mixins.json"
-  ],
+"environment": "client",
+"entrypoints": {
+"main": [
+"io.github.pingisfun.hitboxplus.HitboxPlus"
+],
+"modmenu": [
+"io.github.pingisfun.hitboxplus.integration.ModMenuIntegration"
+]
+},
+"mixins": [
+"hitboxplus.mixins.json"
+],
 
-  "depends": {
-    "minecraft": ">=1.20",
-    "java": ">=17"
-  },
+"depends": {
+"minecraft": ">=1.20",
+"java": ">=17"
+},
 
-  "recommends": {
-    "fabricloader": ">=0.14.14",
-    "cloth-config": ">=12.0",
-    "modmenu": ">=7.0"
-  }
+"recommends": {
+"fabricloader": ">=0.14.14",
+"cloth-config": ">=12.0",
+"modmenu": ">=7.0"
+}
 }
