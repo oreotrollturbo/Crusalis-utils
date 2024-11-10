@@ -1,6 +1,7 @@
 package io.github.pingisfun.hitboxplus;
 
 import io.github.pingisfun.hitboxplus.commands.Register;
+import io.github.pingisfun.hitboxplus.util.ColorUtil;
 import io.github.pingisfun.hitboxplus.waypoints.PlayerCoordSharing;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -11,16 +12,18 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -31,6 +34,7 @@ import net.minecraft.world.RaycastContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static io.github.pingisfun.hitboxplus.util.ColorUtil. player;
@@ -66,6 +70,9 @@ public class HitboxPlus implements ModInitializer {
 
 		KeyBinding calculateOreBind = new KeyBinding("Calcualte ore/stone ratio", InputUtil.GLFW_KEY_EQUAL, "Crusalis Utils");
 		KeyBindingHelper.registerKeyBinding(calculateOreBind); // pressing "=" calculates your ores
+
+		KeyBinding scan = new KeyBinding("Enemy scan", InputUtil.GLFW_KEY_I, "Crusalis Utils");
+		KeyBindingHelper.registerKeyBinding(scan);
 
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("The_answer_to_life_the_universe_and_everything")
@@ -106,15 +113,18 @@ public class HitboxPlus implements ModInitializer {
 				}
 
             }
+
+			if (scan.wasPressed()){
+
+                sendRedHotbarMessage(scan());
+			}
 		});
 
 		ClientCommandRegistrationCallback.EVENT.register(Register::registerCommands); // Registers the commands
-
 	}
 
 	public static void sendCoordsInChat(){
 
-		MinecraftClient mcClient = MinecraftClient.getInstance();
 		int x = (int) MinecraftClient.getInstance().player.getX();
 		int y = (int) MinecraftClient.getInstance().player.getY(); // Get the players coordinates
 		int z = (int) MinecraftClient.getInstance().player.getZ();
@@ -329,6 +339,43 @@ public class HitboxPlus implements ModInitializer {
 		return ""; //Return nothing
 	}
 
+	public static List<Integer> scan(){
+
+		int enemyAmmount = 0;
+		int allyAmount = 0;
+		int nationAmount = 0;
+
+		for (AbstractClientPlayerEntity player : getPlayersInRenderDistance()){
+
+			if (player.equals(MinecraftClient.getInstance().player)) continue;
+
+			int playerColor = ColorUtil.getPlayerPrefixColorHex(player);
+
+			//Checks for green dark green and dark aqua
+			if (playerColor == 0x55FF55 || playerColor == 0x00AA00) {
+				nationAmount++;
+			} else if (playerColor == 0x00AAAA) {
+				allyAmount++;
+			} else{
+				enemyAmmount++;
+			}
+		}
+
+		return List.of(enemyAmmount, allyAmount, nationAmount);
+	}
+
+	public static List<AbstractClientPlayerEntity> getPlayersInRenderDistance() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		ClientWorld world = client.world;
+
+		if (world == null) {
+			return List.of();
+		}
+
+		// Directly retrieve all players in the world, as they're already within render distance
+		return world.getPlayers();
+	}
+
 	public static BlockPos getBlockPosFromRaycast() {
 		double maxDistance = 400;
 
@@ -358,5 +405,18 @@ public class HitboxPlus implements ModInitializer {
 
 		return null; // Return null if no block is hit
 	}
+
+	public static void sendRedHotbarMessage(List<Integer> list) {
+
+		MinecraftClient client = MinecraftClient.getInstance();
+
+		if (client.player == null)  return;
+
+        Text enemies = Text.literal("§l" + list.get(0) + " enemies ").formatted(Formatting.RED);
+        Text allies = Text.literal("§l" + list.get(1) + " allies ").formatted(Formatting.DARK_AQUA);
+        Text nation = Text.literal("§l" + list.get(2) + " nation").formatted(Formatting.GOLD);
+
+        client.player.sendMessage(enemies.copy().append(allies).copy().append(nation), true);
+    }
 
 }

@@ -175,7 +175,6 @@ public class ColorUtil {
                     continue;
                 }
 
-
                 return color;
             }
         }

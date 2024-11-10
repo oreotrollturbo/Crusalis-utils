@@ -32,7 +32,6 @@ public class PlayerCoordSharing {
 
 
         handleWaypointCreation(message, sender.getName());
-
     }
 
     public static void handleServerWaypoint(String message){
@@ -54,6 +53,9 @@ public class PlayerCoordSharing {
 
             return;
         }
+
+        assert MinecraftClient.getInstance().player != null;
+        if  (message.contains(MinecraftClient.getInstance().player.getDisplayName().getString())) return;
 
         if (message.contains("[Local]") && config.coordSharing.acceptCoordsFromLocal){
             handleWaypointCreation(message, "local");
@@ -106,6 +108,9 @@ public class PlayerCoordSharing {
 
             return showMessage;
         }
+
+        assert MinecraftClient.getInstance().player != null;
+        if  (message.contains(MinecraftClient.getInstance().player.getDisplayName().getString())) return true;
 
         if (message.contains("[Local]") && config.coordSharing.acceptCoordsFromLocal){
             handleWaypointCreation(message, "local");
