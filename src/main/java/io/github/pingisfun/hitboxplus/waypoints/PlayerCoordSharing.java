@@ -1,7 +1,7 @@
 package io.github.pingisfun.hitboxplus.waypoints;
 
 import com.mojang.authlib.GameProfile;
-import io.github.pingisfun.hitboxplus.HitboxPlusClient;
+import io.github.pingisfun.hitboxplus.HitboxPlus;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import xaero.common.minimap.waypoints.Waypoint;
@@ -201,11 +201,11 @@ public class PlayerCoordSharing {
 
         if (config.coordSharing.pingSharing.deletePreviousPing) {
 
-            if (HitboxPlusClient.pings.containsKey(nick)){
-                deleteWaypoint(HitboxPlusClient.pings.get(nick));
+            if (HitboxPlus.pings.containsKey(nick)){
+                deleteWaypoint(HitboxPlus.pings.get(nick));
             }
 
-            HitboxPlusClient.pings.put(nick,waypoint);
+            HitboxPlus.pings.put(nick,waypoint);
         }
 
         deleteWaypointInTime(waypoint, config.coordSharing.pingSharing.pingWaypointTimer);

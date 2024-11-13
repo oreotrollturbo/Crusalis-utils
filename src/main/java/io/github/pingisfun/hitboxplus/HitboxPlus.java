@@ -1,6 +1,8 @@
 package io.github.pingisfun.hitboxplus;
 
 import io.github.pingisfun.hitboxplus.commands.Register;
+import io.github.pingisfun.hitboxplus.waypoints.FlagsBrokenDetector;
+import io.github.pingisfun.hitboxplus.waypoints.FlagsPlacedDetector;
 import io.github.pingisfun.hitboxplus.waypoints.PlayerCoordSharing;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -9,6 +11,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.OtherClientPlayerEntity;
@@ -30,7 +33,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xaero.common.minimap.waypoints.Waypoint;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import static io.github.pingisfun.hitboxplus.util.ColorUtil. player;
@@ -42,6 +47,8 @@ public class HitboxPlus implements ModInitializer {
 
 	private static boolean sendCoordCooldown = true;
 	private static boolean pingCooldownDisabled = true;
+
+	public static HashMap<String, Waypoint> pings = new HashMap<>();
 
 
 	@Override
@@ -109,6 +116,38 @@ public class HitboxPlus implements ModInitializer {
 		});
 
 		ClientCommandRegistrationCallback.EVENT.register(Register::registerCommands); // Registers the commands
+
+
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+
+			if  (MinecraftClient.getInstance().player == null){
+				return true;
+			}
+
+
+			FlagsPlacedDetector.checkForPlacedFlags(message.toString());
+
+			FlagsBrokenDetector.handleFlags(message.toString());
+
+			PlayerCoordSharing.handleServerWaypoint(message.toString());
+
+			return PlayerCoordSharing.handleServerPing(message.toString());
+
+		});
+
+		ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
+
+			if  (sender == null || MinecraftClient.getInstance().player == null){
+				MinecraftClient.getInstance().player.sendMessage(Text.literal("sender or instance is null"));
+				return true;
+			}
+
+
+			PlayerCoordSharing.handlePlayerWaypoint(message.toString(), sender);
+
+			return PlayerCoordSharing.handlePlayerPing(message.toString(), sender);
+
+		});
 
 	}
 
