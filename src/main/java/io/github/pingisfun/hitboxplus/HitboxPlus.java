@@ -75,8 +75,8 @@ public class HitboxPlus implements ModInitializer {
 		KeyBinding teamBind = new KeyBinding("Register Team", InputUtil.GLFW_KEY_N, "Crusalis Utils");
 		KeyBindingHelper.registerKeyBinding(teamBind); // pressing N adds an entire nation to your "teams list"
 
-		KeyBinding scan = new KeyBinding("Enemy scan", InputUtil.GLFW_KEY_I, "Crusalis Utils");
-		KeyBindingHelper.registerKeyBinding(scan);
+//		KeyBinding scan = new KeyBinding("Enemy scan", InputUtil.GLFW_KEY_I, "Crusalis Utils");
+//		KeyBindingHelper.registerKeyBinding(scan);
 
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("The_answer_to_life_the_universe_and_everything")
@@ -103,10 +103,9 @@ public class HitboxPlus implements ModInitializer {
 				sendPing();
 			}
 
-			if (scan.wasPressed()){
-
-				sendScanHotbarMessage(scan());
-			}
+//			if (scan.wasPressed()){
+//				sendScanHotbarMessage(scan());
+//			}
 
 
 			if (teamBind.wasPressed()) { //Add an entire team to your list
