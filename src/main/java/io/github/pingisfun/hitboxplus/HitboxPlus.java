@@ -1,6 +1,7 @@
 package io.github.pingisfun.hitboxplus;
 
 import io.github.pingisfun.hitboxplus.commands.Register;
+import io.github.pingisfun.hitboxplus.commands.SetLocationCommand;
 import io.github.pingisfun.hitboxplus.util.ColorUtil;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsBrokenDetector;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsPlacedDetector;
@@ -85,6 +86,11 @@ public class HitboxPlus implements ModInitializer {
 					return 1;
 				}
 		)));
+
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			// Register your new SetLocationCommand
+			SetLocationCommand.register(dispatcher);
+		});
 
 
 
@@ -221,7 +227,7 @@ public class HitboxPlus implements ModInitializer {
 				sendCoordCooldown = false;// make sure the cooldown is off
 
 				try {
-					TimeUnit.SECONDS.sleep(5); //Coldown is set to a minute
+					TimeUnit.SECONDS.sleep(5); //Cooldown is set to a minute
 				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
 				}
@@ -451,5 +457,4 @@ public class HitboxPlus implements ModInitializer {
 
 		return null; // Return null if no block is hit
 	}
-
 }

@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-@Config(name = HitboxPlus.MOD_ID)
+@Config(name = HitboxPlus.MOD_ID) //TODO add options for rally point
 public class ModConfig implements ConfigData {
     @ConfigEntry.Category(value = "general")
     public boolean isModEnabled = true;

@@ -32,7 +32,6 @@ public class PlayerCoordSharing {
 
 
         handleWaypointCreation(message, sender.getName());
-
     }
 
     public static void handleServerWaypoint(String message){
