@@ -36,8 +36,8 @@ public class PlayerCoordSharing {
 
     public static void handleServerWaypoint(String message){
 
-        // The reason the function that detects player code doesn't work is because many servers in order to
-        // filter/redirect messages they convert them into server messages . Nodes does this too;
+        // The reason the function that detects player code doesn't work is because many servers to
+        // filter/redirect messages they convert them into server messages. Nodes does this too;
 
         if (message == null || !config.coordSharing.locationSharing.acceptCoordsFromFriends || !message.contains("my coords (")) {
             return;

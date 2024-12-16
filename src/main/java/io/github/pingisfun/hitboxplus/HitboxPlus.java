@@ -6,6 +6,7 @@ import io.github.pingisfun.hitboxplus.util.ColorUtil;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsBrokenDetector;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsPlacedDetector;
 import io.github.pingisfun.hitboxplus.waypoints.PlayerCoordSharing;
+import io.github.pingisfun.hitboxplus.waypoints.RallyPointDetection;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -141,6 +142,8 @@ public class HitboxPlus implements ModInitializer {
 
 			PlayerCoordSharing.handleServerWaypoint(message.toString());
 
+			RallyPointDetection.handleRallyPointMessage(message.getString());
+
 			return PlayerCoordSharing.handleServerPing(message.toString());
 
 		});
@@ -152,8 +155,9 @@ public class HitboxPlus implements ModInitializer {
 				return true;
 			}
 
-
 			PlayerCoordSharing.handlePlayerWaypoint(message.toString(), sender);
+
+			RallyPointDetection.handleRallyPointMessage(message.getString());
 
 			return PlayerCoordSharing.handlePlayerPing(message.toString(), sender);
 
@@ -277,50 +281,6 @@ public class HitboxPlus implements ModInitializer {
 		}).start();
 	}
 
-	private static void calculateOreRatio(){
-
-		int totalDiamondAmmount = 0;
-		int totalIronAmmount = 0; // Defining the "ore counters"
-		int totalStoneAmmount = 0;
-
-		for (int i = 0; 35 >= i; i++) { //Loops 35 times because the player has 35 inventory slots (excluding offhand and armor)
-
-			ItemStack inventorySlot = MinecraftClient.getInstance().player.getInventory().getStack(i); //Get the players inventory
-
-
-			if (inventorySlot.isOf(Items.DIAMOND_ORE) ){
-				totalDiamondAmmount = totalIronAmmount + inventorySlot.getCount(); //If it finds a diamond stack it adds it to the counter
-			}else if (inventorySlot.isOf(Items.IRON_ORE)) {
-				totalIronAmmount = totalIronAmmount + inventorySlot.getCount();
-			}else if (inventorySlot.isOf(Items.COBBLESTONE) || inventorySlot.isOf(Items.ANDESITE) || inventorySlot.isOf(Items.DIORITE) || inventorySlot.isOf(Items.SANDSTONE)){
-				totalStoneAmmount = totalStoneAmmount + inventorySlot.getCount(); //The stone ammount also counts andesite diorite and sandstone aswell
-			}
-		}
-
-
-		if (totalDiamondAmmount != 0 ||  totalStoneAmmount != 0){ // Making sure there is something to avoid exceptions
-			double stoneDiamond = (double) totalDiamondAmmount / totalStoneAmmount;
-			MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + stoneDiamond + " diamonds per stone")); //calculate and tell the player his rates
-		} else {
-			MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no stone or no diamonds in your inventory")); //No ores found
-		}
-
-		if (totalStoneAmmount != 0 ||  totalIronAmmount != 0){ // Making sure there is something to avoid exceptions
-			double stoneIron = (double) totalIronAmmount/totalStoneAmmount;
-			MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + stoneIron + " iron ore per stone")); //calculate and tell the player his rates
-		} else {
-			MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no stone or no iron ore in your inventory"));//No ores found
-		}
-
-		if (totalStoneAmmount != 0 ||  totalIronAmmount != 0){ // Making sure there is something to avoid exceptions
-			double diamondIron = (double) totalDiamondAmmount/totalIronAmmount;
-			MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + diamondIron + " diamonds per iron ore")); //calculate and tell the player his rates
-		} else {
-			MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no iron ore or no diamonds in your inventory"));//No ores found
-		}
-
-	}
-
 	private static void addTeam(MinecraftClient clientPlayer) throws InterruptedException { //The code to add a team to your list
 
         if (!clientPlayer.getEntityRenderDispatcher().shouldRenderHitboxes()) { //If hitboxes are off dont do anything
@@ -331,7 +291,7 @@ public class HitboxPlus implements ModInitializer {
             return; //If the player has the feature off do nothing
         }
 
-		double maxReach = 10000; //The farthest target the player can detect (dont go higher might cause performance issues)
+		double maxReach = 10000; //The farthest target the player can detect (don't go higher might cause performance issues)
 
 		PlayerEntity client = MinecraftClient.getInstance().player; //get your player
 

@@ -58,13 +58,21 @@ public class WaypointUtils {
         return waypointSet.getList(); // All it does is get the waypoint list so that you don't have to do it in every part individually
     }
 
-    public static void makeTimerWaypoint(List<Waypoint> waypoints , int x, int y, int yOffset, int z , int color, String town, String waypointSymbol){
+    public static void makeTimerWaypoint(List<Waypoint> waypoints , int x, int y, int yOffset, int z , int color, String town, String waypointSymbol,int time,boolean isTown){
+
+        String waypointName;
+
+        if (isTown) {
+            waypointName = "Flag on " + town;
+        } else {
+            waypointName = town;
+        }
 
 
         // Make a thread with a timer to auto delete the waypoint
         assert waypoints != null;
         waypoints.add(new Waypoint(x, y + yOffset, z, // Add the waypoint
-                "Flag on " + town, waypointSymbol, color, 0, true));
+                waypointName, waypointSymbol, color, 0, true));
 
         Waypoint lastWaypoint = waypoints.get(waypoints.size() - 1); //Get the waypoint in the thread to delete it later
 
@@ -73,7 +81,10 @@ public class WaypointUtils {
             MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_BELL_USE, 1, config.specialTowns.pitch);
         }
 
-        deleteWaypointInTime(lastWaypoint ,config.pingTowns.removeCooldown);
+        if (time != 0){
+            deleteWaypointInTime(lastWaypoint ,config.pingTowns.removeCooldown);
+        }
+        deleteWaypointInTime(lastWaypoint ,time);
     }
 
     public static void deleteWaypointInTime(Waypoint waypoint, int time){
@@ -97,6 +108,37 @@ public class WaypointUtils {
         HitboxPlus.pings.values().removeIf(value -> value.equals(waypoint));
 
         getWaypointList().remove(waypoint);
+    }
+
+    public static boolean isValid(String message){
+
+        if (message == null || message.isEmpty()) return false;
+
+        if (config.coordSharing.locationSharing.acceptCoordsFromFriends){
+            for (String nick : config.friend.list) {
+
+                if (!message.contains(nick)){
+                    continue;
+                }
+
+                return true;
+            }
+        }
+
+        if (message.contains("[Local]") && config.coordSharing.acceptCoordsFromLocal){
+            return true;
+        }
+        else if (message.contains("[Town]") && config.coordSharing.acceptCoordsFromTown){
+            return true;
+        }
+        else if (message.contains("[Nation]") && config.coordSharing.acceptCoordsFromNation){
+            return true;
+        }
+        else if (message.contains("[Ally]") && config.coordSharing.acceptCoordsFromAlly){
+            return true;
+        }
+
+        return false;
     }
 
 }

@@ -60,7 +60,7 @@ public class FlagsPlacedDetector {
 
                 if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                     // make sure the town is within defined range or the setting is disabled
-                    makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, waypointSymbol); //Calls the function that makes thw waypoint
+                    makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, waypointSymbol,0,true); //Calls the function that makes thw waypoint
                     color = 0;
                 }
             }
@@ -91,7 +91,7 @@ public class FlagsPlacedDetector {
                 if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                     //Make sure there is no flag range limit or the flag is within the limit
 
-                    makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, "[F]"); //Calls the function that makes thw waypoint
+                    makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, "[F]",0,true); //Calls the function that makes thw waypoint
                 }
             }
 
