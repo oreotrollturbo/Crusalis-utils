@@ -82,6 +82,9 @@ public class ModConfig implements ConfigData {
     public MiscEntityDropdown misc = new MiscEntityDropdown();
 
     @ConfigEntry.Category(value = "teamColor")
+    public boolean areAnalyticsEnabled = true;
+
+    @ConfigEntry.Category(value = "teamColor")
     public boolean experimental = true;
 
     @ConfigEntry.Category(value = "teamColor")

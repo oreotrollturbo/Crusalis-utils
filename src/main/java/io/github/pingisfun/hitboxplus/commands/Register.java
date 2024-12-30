@@ -9,6 +9,7 @@ import java.util.Collections;
 public class Register {
     public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         FriendCommand.register(dispatcher);
+        Getstats.register(dispatcher);
     }
 
 }

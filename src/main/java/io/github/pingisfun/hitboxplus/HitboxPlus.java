@@ -2,6 +2,8 @@ package io.github.pingisfun.hitboxplus;
 
 import io.github.pingisfun.hitboxplus.commands.Register;
 import io.github.pingisfun.hitboxplus.commands.SetLocationCommand;
+import io.github.pingisfun.hitboxplus.datatracking.DataSending;
+import io.github.pingisfun.hitboxplus.datatracking.DataTracking;
 import io.github.pingisfun.hitboxplus.util.ColorUtil;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsBrokenDetector;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsPlacedDetector;
@@ -23,6 +25,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
@@ -55,6 +58,9 @@ public class HitboxPlus implements ModInitializer {
 	private static boolean pingCooldownDisabled = true;
 
 	public static HashMap<String, Waypoint> pings = new HashMap<>();
+
+	private boolean wasDead = false;
+
 
 
 	@Override
@@ -97,7 +103,7 @@ public class HitboxPlus implements ModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (openConfig.wasPressed()) { //When O is pressed
-
+				DataTracking.openedConfig++;
 				Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
 				client.setScreen(configScreen); // Open the cloth config menu
 			}
@@ -122,8 +128,33 @@ public class HitboxPlus implements ModInitializer {
 				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
 				}
-
             }
+
+
+			client.world.getEntities().forEach(entity -> {
+				// Check if the entity is a LivingEntity and is dead
+				if (entity instanceof LivingEntity livingEntity) {
+					if (livingEntity.isDead() && wasKilledByPlayer(client.player, livingEntity)
+					&& isPlayerOnServer("crusalis.net")) {
+						DataTracking.kills++;
+					}
+				}
+			});
+
+			if (client.player != null) {
+				PlayerEntity player = client.player;
+
+				// Check if the player's health is zero
+				if (player.getHealth() <= 0) {
+					if (!wasDead && isPlayerOnServer("crusalis.net")) {
+						DataTracking.deaths++;
+
+						wasDead = true; // Mark player as dead to avoid repeated triggers
+					}
+				} else {
+					wasDead = false; // Reset if the player is alive
+				}
+			}
 		});
 
 		ClientCommandRegistrationCallback.EVENT.register(Register::registerCommands); // Registers the commands
@@ -163,6 +194,7 @@ public class HitboxPlus implements ModInitializer {
 
 		});
 
+		DataSending.init();
 	}
 
 	public static void sendScanHotbarMessage(List<Integer> list) {
@@ -236,6 +268,8 @@ public class HitboxPlus implements ModInitializer {
 					throw new RuntimeException(e);
 				}
 
+				DataTracking.locationPings++;
+
 				sendCoordCooldown = true;
 				//Parses the player coordinates into a string
 			}else {
@@ -259,6 +293,8 @@ public class HitboxPlus implements ModInitializer {
 			MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNo block found"), true );
 			return;
 		}
+
+		DataTracking.positionPings++;
 
 		int x = blockToPing.getX();
 		int y = blockToPing.getY();
@@ -416,5 +452,33 @@ public class HitboxPlus implements ModInitializer {
 		}
 
 		return null; // Return null if no block is hit
+	}
+
+	/**
+	 * Check if the entity was killed by the client player
+	 */
+	private boolean wasKilledByPlayer(PlayerEntity player, LivingEntity entity) {
+		// Check if the entity's last damage source was the client player
+		return entity.getRecentDamageSource() != null &&
+				entity.getRecentDamageSource().getAttacker() == player;
+	}
+
+	public static boolean isPlayerOnServer(String targetServer) {
+		if (true){
+			return true;
+		}
+
+		MinecraftClient client = MinecraftClient.getInstance();
+
+		// Ensure the player is connected to a server
+		if (client.getCurrentServerEntry() != null) {
+			String currentServerAddress = client.getCurrentServerEntry().address;
+
+			// Check if the current server matches the target server
+			return currentServerAddress.equalsIgnoreCase(targetServer);
+		}
+
+		// Return false if not connected to any server
+		return false;
 	}
 }
