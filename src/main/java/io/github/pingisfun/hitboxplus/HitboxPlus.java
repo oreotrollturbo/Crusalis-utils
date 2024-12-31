@@ -130,29 +130,30 @@ public class HitboxPlus implements ModInitializer {
 				}
             }
 
-
-			client.world.getEntities().forEach(entity -> {
-				// Check if the entity is a LivingEntity and is dead
-				if (entity instanceof LivingEntity livingEntity) {
-					if (livingEntity.isDead() && wasKilledByPlayer(client.player, livingEntity)
-					&& isPlayerOnServer("crusalis.net")) {
-						DataTracking.kills++;
+			if (client.world != null && client.player != null) {
+				client.world.getEntities().forEach(entity -> {
+					// Check if the entity is a LivingEntity and is dead
+					if (entity instanceof LivingEntity livingEntity) {
+						if (livingEntity.isDead() && wasKilledByPlayer(client.player, livingEntity)
+								&& isPlayerOnServer("crusalis.net")) {
+							DataTracking.kills++;
+						}
 					}
-				}
-			});
+				});
 
-			if (client.player != null) {
-				PlayerEntity player = client.player;
+				if (client.player != null) {
+					PlayerEntity player = client.player;
 
-				// Check if the player's health is zero
-				if (player.getHealth() <= 0) {
-					if (!wasDead && isPlayerOnServer("crusalis.net")) {
-						DataTracking.deaths++;
+					// Check if the player's health is zero
+					if (player.getHealth() <= 0) {
+						if (!wasDead && isPlayerOnServer("crusalis.net")) {
+							DataTracking.deaths++;
 
-						wasDead = true; // Mark player as dead to avoid repeated triggers
+							wasDead = true; // Mark player as dead to avoid repeated triggers
+						}
+					} else {
+						wasDead = false; // Reset if the player is alive
 					}
-				} else {
-					wasDead = false; // Reset if the player is alive
 				}
 			}
 		});

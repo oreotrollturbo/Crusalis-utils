@@ -8,6 +8,4 @@ public class DataTracking {
     public static int deaths = 0;
     public static int rallyPoints = 0;
     public static int openedConfig = 0;
-
-
 }
