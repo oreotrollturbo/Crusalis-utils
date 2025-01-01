@@ -17,9 +17,11 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -28,8 +30,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.BlockHitResult;
@@ -156,6 +156,12 @@ public class HitboxPlus implements ModInitializer {
 					}
 				}
 			}
+
+			ClientPlayConnectionEvents.JOIN.register((handler, sender, player) -> {
+				if (isPlayerOnServer("crusalis.net")) {
+					DataTracking.joinedCrusalis++;
+				}
+			});
 		});
 
 		ClientCommandRegistrationCallback.EVENT.register(Register::registerCommands); // Registers the commands
@@ -461,13 +467,11 @@ public class HitboxPlus implements ModInitializer {
 	private boolean wasKilledByPlayer(PlayerEntity player, LivingEntity entity) {
 		// Check if the entity's last damage source was the client player
 		return entity.getRecentDamageSource() != null &&
-				entity.getRecentDamageSource().getAttacker() == player;
+				entity.getRecentDamageSource().getAttacker() == player
+				&& entity instanceof PlayerEntity;
 	}
 
 	public static boolean isPlayerOnServer(String targetServer) {
-		if (true){
-			return true;
-		}
 
 		MinecraftClient client = MinecraftClient.getInstance();
 
