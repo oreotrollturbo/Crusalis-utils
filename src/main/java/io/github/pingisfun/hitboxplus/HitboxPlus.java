@@ -14,10 +14,12 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -132,15 +134,6 @@ public class HitboxPlus implements ModInitializer {
             }
 
 			if (client.world != null && client.player != null) {
-				client.world.getEntities().forEach(entity -> {
-					// Check if the entity is a LivingEntity and is dead
-					if (entity instanceof LivingEntity livingEntity) {
-						if (livingEntity.isDead() && wasKilledByPlayer(client.player, livingEntity)
-								&& isPlayerOnServer("crusalis.net")) {
-							DataTracking.kills++;
-						}
-					}
-				});
 
 				if (client.player != null) {
 					PlayerEntity player = client.player;
@@ -159,13 +152,14 @@ public class HitboxPlus implements ModInitializer {
 			}
 
 			ClientPlayConnectionEvents.JOIN.register((handler, sender, player) -> {
-				if (isPlayerOnServer("crusalis.net")) {
+				if (isPlayerOnServer("crusalis.net") && !hasJoined) {
 					DataTracking.joinedCrusalis++;
 					hasJoined = true;
 				}
 			});
 
 			ClientPlayConnectionEvents.DISCONNECT.register((handler, player) -> {
+				DataSending.sendData();
 				hasJoined = false;
 			});
 		});
@@ -208,7 +202,13 @@ public class HitboxPlus implements ModInitializer {
 		});
 
 		DataSending.init();
+
+		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> {
+			// Code to run when the client shuts down
+			DataSending.sendData();
+		});
 	}
+
 
 	public static void sendScanHotbarMessage(List<Integer> list) {
 

@@ -9,10 +9,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
-import java.util.Arrays;
-
-import static com.mojang.brigadier.arguments.StringArgumentType.getString;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class Getstats {
@@ -23,7 +19,6 @@ public class Getstats {
                         MinecraftClient.getInstance().player.sendMessage(Text.literal("Config menu opened: " + DataTracking.openedConfig));
                         MinecraftClient.getInstance().player.sendMessage(Text.literal("Location pings sent: " + DataTracking.locationPings));
                         MinecraftClient.getInstance().player.sendMessage(Text.literal("Position pings sent: " + DataTracking.positionPings));
-                        MinecraftClient.getInstance().player.sendMessage(Text.literal("Players killed: " + DataTracking.kills));
                         MinecraftClient.getInstance().player.sendMessage(Text.literal("Deaths: " + DataTracking.deaths));
                             return 0;
                         }

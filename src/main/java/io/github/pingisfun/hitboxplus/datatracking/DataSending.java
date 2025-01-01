@@ -12,10 +12,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 public class DataSending {
     public static void init() {
+        ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+        if (config.areAnalyticsDisabled) return;
         startLoop();
     }
 
@@ -25,13 +28,14 @@ public class DataSending {
         // Create a new thread using an executor
         Executors.newSingleThreadExecutor().submit(() -> {
             ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-            while (config.areAnalyticsEnabled) {
+            while (config.areAnalyticsDisabled) {
                 try {
 
+                    Thread.sleep(TEN_MINUTES_IN_MILLIS);
+
+                    if (DataTracking.noDataChanges()) continue;
                     sendData();
 
-                    // Wait for 10 minutes
-                    Thread.sleep(TEN_MINUTES_IN_MILLIS);
                 } catch (InterruptedException e) {
                     // Handle thread interruption (e.g., shutdown)
                     System.out.println("Thread interrupted. Exiting loop.");
@@ -48,11 +52,8 @@ public class DataSending {
             return;
         }
 
-        PlayerEntity player = client.player;  // Get the player entity
-
-        String uuid = player.getUuid().toString();  // UUID of the player
-        String username = player.getDisplayName().getString();  // Player's username
-        int kills = DataTracking.kills;
+        String username = MinecraftClient.getInstance().getSession().getUsername();
+        String uuid = MinecraftClient.getInstance().getSession().getUuidOrNull().toString();
         int deaths = DataTracking.deaths;
         int locationPings = DataTracking.locationPings;
         int locationWaypoints = DataTracking.positionPings;
@@ -62,39 +63,34 @@ public class DataSending {
         int flagsDetected = DataTracking.flagsDetected;
 
         try {
-            // Build the URL dynamically with the player data and DataTracking variables
-            String urlString = buildUrl(uuid, username, kills, deaths, locationPings, locationWaypoints, rallyPoints, openedConfig, loggedOnCrusalis, flagsDetected);
+            // Build the URL
+            String urlString = buildUrl(uuid, username, deaths, locationPings, locationWaypoints, rallyPoints, openedConfig, loggedOnCrusalis, flagsDetected);
 
-            // Create a URL object
-            URL url = new URL(urlString);
+            // Create the HTTP request asynchronously
+            CompletableFuture.runAsync(() -> {
+                try {
+                    URL url = new URL(urlString);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("User-Agent", "MinecraftClient/1.0");
 
-            // Open a connection to the URL
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    int responseCode = connection.getResponseCode();
+                    System.out.println("Response Code: " + responseCode);
 
-            // Set the request method (GET)
-            connection.setRequestMethod("GET");
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
 
-            // Set headers (optional)
-            connection.setRequestProperty("User-Agent", "MinecraftClient/1.0");
+                    System.out.println(response.toString());
 
-            // Get the response code
-            int responseCode = connection.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
-
-            // Read the response
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("REQUEST SENT"), true);
-
-            // Print the response
-            System.out.println(response.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,8 +100,9 @@ public class DataSending {
         DataTracking.wipeVariables();
     }
 
+
     // Method to build the URL with variables
-    private static String buildUrl(String uuid, String username, int kills, int deaths, int locationPings,
+    private static String buildUrl(String uuid, String username, int deaths, int locationPings,
                                    int locationWaypoints, int rallyPoints, int openedConfig, int loggedOnCrusalis,
                                    int flagsDetected) throws UnsupportedEncodingException {
         String baseUrl = "https://crusalis-api-666731169374.europe-west10.run.app?";
@@ -117,7 +114,6 @@ public class DataSending {
         // Build the URL with the variables
         return baseUrl + "uuid=" + encodedUuid +
                 "&username=" + encodedUsername +
-                "&kills=" + kills +
                 "&deaths=" + deaths +
                 "&location_pings=" + locationPings +
                 "&location_waypoints=" + locationWaypoints +

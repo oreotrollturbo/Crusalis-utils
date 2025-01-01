@@ -114,6 +114,8 @@
 
   "text.autoconfig.hitboxplus.category.teamColor": "Team Hitbox colors",
   "text.autoconfig.hitboxplus.category.flagToWaypoint": "Flag to waypoint",
+  "text.autoconfig.hitboxplus.category.analytics": "Analytics/tracking",
+  "text.autoconfig.hitboxplus.option.areAnalyticsDisabled": "§lOpt out of data tracking",
   "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and their team name",
   "text.autoconfig.hitboxplus.option.prefix.oreolist": "Prefix List",
   "text.autoconfig.hitboxplus.option.friendteam.oreolist": "Friendly Teams List",

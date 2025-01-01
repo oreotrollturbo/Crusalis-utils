@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-@Config(name = HitboxPlus.MOD_ID) //TODO add options for rally point
+@Config(name = HitboxPlus.MOD_ID)
 public class ModConfig implements ConfigData {
     @ConfigEntry.Category(value = "general")
     public boolean isModEnabled = true;
@@ -82,9 +82,6 @@ public class ModConfig implements ConfigData {
     public MiscEntityDropdown misc = new MiscEntityDropdown();
 
     @ConfigEntry.Category(value = "teamColor")
-    public boolean areAnalyticsEnabled = true;
-
-    @ConfigEntry.Category(value = "teamColor")
     public boolean experimental = true;
 
     @ConfigEntry.Category(value = "teamColor")
@@ -106,6 +103,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category(value = "flagToWaypoint")
     @ConfigEntry.Gui.CollapsibleObject //Special towns section for sounds and notifications
     public Sounds specialTowns = new Sounds();
+
+    @ConfigEntry.Category(value = "analytics")
+    public boolean areAnalyticsDisabled = false;
 
 
 
