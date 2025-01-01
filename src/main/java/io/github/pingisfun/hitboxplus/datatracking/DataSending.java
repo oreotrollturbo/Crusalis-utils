@@ -4,6 +4,7 @@ import io.github.pingisfun.hitboxplus.ModConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -89,6 +90,8 @@ public class DataSending {
                 response.append(inputLine);
             }
             in.close();
+
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("REQUEST SENT"), true);
 
             // Print the response
             System.out.println(response.toString());

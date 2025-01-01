@@ -61,6 +61,7 @@ public class HitboxPlus implements ModInitializer {
 
 	private boolean wasDead = false;
 
+	private boolean hasJoined = false;
 
 
 	@Override
@@ -160,7 +161,12 @@ public class HitboxPlus implements ModInitializer {
 			ClientPlayConnectionEvents.JOIN.register((handler, sender, player) -> {
 				if (isPlayerOnServer("crusalis.net")) {
 					DataTracking.joinedCrusalis++;
+					hasJoined = true;
 				}
+			});
+
+			ClientPlayConnectionEvents.DISCONNECT.register((handler, player) -> {
+				hasJoined = false;
 			});
 		});
 
