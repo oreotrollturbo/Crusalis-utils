@@ -18,11 +18,14 @@ import java.util.concurrent.Executors;
 public class DataSending {
     public static void init() {
         ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
-        if (config.areAnalyticsDisabled) return;
+        if (config.areAnalyticsDisabled){
+            sendOptOutData();
+            return;
+        }
         startLoop();
     }
 
-    private static final long TEN_MINUTES_IN_MILLIS = 10 * 60 * 100; // 10 minutes in milliseconds
+    private static final long TEN_MINUTES_IN_MILLIS = 20 * 60 * 1000; // 10 minutes in milliseconds
 
     public static void startLoop() {
         // Create a new thread using an executor
@@ -121,5 +124,60 @@ public class DataSending {
                 "&opened_config=" + openedConfig +
                 "&logged_on_crusalis=" + loggedOnCrusalis +
                 "&flags_detected=" + flagsDetected;
+    }
+
+    private static void sendOptOutData() {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (client.player == null) {
+            return;
+        }
+
+        String uuid = MinecraftClient.getInstance().getSession().getUuidOrNull().toString();
+
+        try {
+            // Build the opt-out URL
+            String urlString = buildOptOutUrl(uuid);
+
+            // Create the HTTP request asynchronously
+            CompletableFuture.runAsync(() -> {
+                try {
+                    URL url = new URL(urlString);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("User-Agent", "MinecraftClient/1.0");
+
+                    int responseCode = connection.getResponseCode();
+                    System.out.println("Opt-Out Response Code: " + responseCode);
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    System.out.println("Opt-Out Response: " + response.toString());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to build the opt-out URL
+    private static String buildOptOutUrl(String uuid) throws UnsupportedEncodingException {
+        String baseUrl = "https://crusalis-api-666731169374.europe-west10.run.app?";
+
+        // Encode the UUID to avoid issues with special characters
+        String encodedUuid = URLEncoder.encode(uuid, "UTF-8");
+
+        // Build the opt-out URL
+        return baseUrl + "uuid=" + encodedUuid + "&opted_out=true";
     }
 }
