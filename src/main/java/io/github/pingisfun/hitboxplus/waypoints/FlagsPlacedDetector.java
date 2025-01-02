@@ -3,6 +3,7 @@ package io.github.pingisfun.hitboxplus.waypoints;
 import io.github.pingisfun.hitboxplus.datatracking.DataTracking;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 import xaero.common.minimap.waypoints.Waypoint;
 
 import java.util.List;
@@ -40,7 +41,6 @@ public class FlagsPlacedDetector {
             int x = Integer.parseInt(matcher.group(3));
             int y = Integer.parseInt(matcher.group(4)); // Get the coords
             int z = Integer.parseInt(matcher.group(5));
-
 
             if (name.equals(clientName)) {
                 color = 231212;

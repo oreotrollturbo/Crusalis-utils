@@ -195,7 +195,7 @@ public class HitboxPlus implements ModInitializer {
 
 			PlayerCoordSharing.handlePlayerWaypoint(message.toString(), sender);
 
-			RallyPointDetection.handleRallyPointMessage(message.getString());
+			RallyPointDetection.handleRallyPointMessageChat(message.getString(),sender);
 
 			return PlayerCoordSharing.handlePlayerPing(message.toString(), sender);
 

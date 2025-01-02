@@ -1,11 +1,13 @@
 package io.github.pingisfun.hitboxplus.waypoints;
 
+import com.mojang.authlib.GameProfile;
 import io.github.pingisfun.hitboxplus.HitboxPlus;
 import io.github.pingisfun.hitboxplus.ModConfig;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import xaero.common.XaeroMinimapSession;
 import xaero.common.minimap.waypoints.Waypoint;
 import xaero.common.minimap.waypoints.WaypointSet;
@@ -81,10 +83,11 @@ public class WaypointUtils {
             MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_BELL_USE, 1, config.specialTowns.pitch);
         }
 
-        if (time != 0){
+        if (time == 0){
             deleteWaypointInTime(lastWaypoint ,config.pingTowns.removeCooldown);
+        }else {
+            deleteWaypointInTime(lastWaypoint ,time);
         }
-        deleteWaypointInTime(lastWaypoint ,time);
     }
 
     public static void deleteWaypointInTime(Waypoint waypoint, int time){
@@ -97,8 +100,7 @@ public class WaypointUtils {
                 throw new RuntimeException(e);
             }
 
-
-             deleteWaypoint(waypoint);// Delete the waypoint
+            deleteWaypoint(waypoint);// Delete the waypoint
         }).start();
     }
 
@@ -110,20 +112,28 @@ public class WaypointUtils {
         getWaypointList().remove(waypoint);
     }
 
-    public static boolean isValid(String message){
+    public static boolean isValid(String message, GameProfile player){
 
         if (message == null || message.isEmpty()) return false;
 
-        if (config.coordSharing.locationSharing.acceptCoordsFromFriends){
-            for (String nick : config.friend.list) {
+        if (player == null){
+            if (config.coordSharing.locationSharing.acceptCoordsFromFriends){
+                for (String nick : config.friend.list) {
 
-                if (!message.contains(nick)){
-                    continue;
+                    if (!message.contains(nick)){
+                        continue;
+                    }
+
+                    return true;
                 }
-
+            }
+        } else {
+            if (config.coordSharing.locationSharing.acceptCoordsFromFriends &&
+            config.friend.list.contains(player.getName())){
                 return true;
             }
         }
+
 
         if (message.contains("[Local]") && config.coordSharing.acceptCoordsFromLocal){
             return true;
