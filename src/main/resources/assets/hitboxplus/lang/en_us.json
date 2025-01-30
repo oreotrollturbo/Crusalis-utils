@@ -102,7 +102,8 @@
   "text.autoconfig.hitboxplus.option.misc.tridentEntity.alpha": "Transparency",
 
 
-  "text.autoconfig.hitboxplus.option.experimental": "§l Automatic color detection",
+  "text.autoconfig.hitboxplus.option.autoHitboxColour": "§l Automatic colour detection",
+  "text.autoconfig.hitboxplus.option.autoNameHitboxColour": "Detect colour from name",
   "text.autoconfig.hitboxplus.option.friendteam": "§2§l Friendly Teams",
   "text.autoconfig.hitboxplus.option.enemyteam": "§4§l Enemy Teams",
   "text.autoconfig.hitboxplus.option.friendteam.list": "Friendly Team List",
@@ -116,6 +117,7 @@
   "text.autoconfig.hitboxplus.category.flagToWaypoint": "Flag to waypoint",
   "text.autoconfig.hitboxplus.category.analytics": "Analytics/tracking",
   "text.autoconfig.hitboxplus.option.areAnalyticsDisabled": "§lOpt out of data tracking",
+  "text.autoconfig.hitboxplus.option.playSoundOnKill": "§lPlay sound on kill",
   "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and their team name",
   "text.autoconfig.hitboxplus.option.prefix.oreolist": "Prefix List",
   "text.autoconfig.hitboxplus.option.friendteam.oreolist": "Friendly Teams List",

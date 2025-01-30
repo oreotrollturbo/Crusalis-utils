@@ -1,9 +1,7 @@
 package io.github.pingisfun.hitboxplus.waypoints;
 
-import io.github.pingisfun.hitboxplus.datatracking.DataTracking;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 import xaero.common.minimap.waypoints.Waypoint;
 
 import java.util.List;
@@ -64,8 +62,6 @@ public class FlagsPlacedDetector {
                 if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                     // make sure the town is within defined range or the setting is disabled
 
-                    DataTracking.flagsDetected++;
-
                     makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, waypointSymbol,0,true); //Calls the function that makes thw waypoint
                     color = 0;
                 }
@@ -96,8 +92,6 @@ public class FlagsPlacedDetector {
 
                 if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                     //Make sure there is no flag range limit or the flag is within the limit
-
-                    DataTracking.flagsDetected++;
 
                     makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, "[F]",0,true); //Calls the function that makes thw waypoint
                 }

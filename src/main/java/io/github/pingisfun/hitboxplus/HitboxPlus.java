@@ -1,9 +1,7 @@
 package io.github.pingisfun.hitboxplus;
 
-import io.github.pingisfun.hitboxplus.commands.Register;
 import io.github.pingisfun.hitboxplus.commands.SetLocationCommand;
-import io.github.pingisfun.hitboxplus.datatracking.DataSending;
-import io.github.pingisfun.hitboxplus.datatracking.DataTracking;
+import io.github.pingisfun.hitboxplus.datatracking.KillsChatDetection;
 import io.github.pingisfun.hitboxplus.util.ColorUtil;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsBrokenDetector;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsPlacedDetector;
@@ -14,16 +12,12 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -102,11 +96,18 @@ public class HitboxPlus implements ModInitializer {
 			SetLocationCommand.register(dispatcher);
 		});
 
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("kd")
+				.executes(context -> { // This is just a meme command
+							sendKdInHotbar();
+							return 1;
+						}
+				)));
+
+
 
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (openConfig.wasPressed()) { //When O is pressed
-				DataTracking.openedConfig++;
 				Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
 				client.setScreen(configScreen); // Open the cloth config menu
 			}
@@ -141,7 +142,10 @@ public class HitboxPlus implements ModInitializer {
 					// Check if the player's health is zero
 					if (player.getHealth() <= 0) {
 						if (!wasDead && isPlayerOnServer("crusalis.net")) {
-							DataTracking.deaths++;
+
+							ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+							config.deaths++;
+							AutoConfig.getConfigHolder(ModConfig.class).save();
 
 							wasDead = true; // Mark player as dead to avoid repeated triggers
 						}
@@ -150,22 +154,7 @@ public class HitboxPlus implements ModInitializer {
 					}
 				}
 			}
-
-			ClientPlayConnectionEvents.JOIN.register((handler, sender, player) -> {
-				if (isPlayerOnServer("crusalis.net") && !hasJoined) {
-					DataTracking.joinedCrusalis++;
-					hasJoined = true;
-				}
-			});
-
-			ClientPlayConnectionEvents.DISCONNECT.register((handler, player) -> {
-				DataSending.sendData();
-				hasJoined = false;
-			});
 		});
-
-		ClientCommandRegistrationCallback.EVENT.register(Register::registerCommands); // Registers the commands
-
 
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 
@@ -181,6 +170,8 @@ public class HitboxPlus implements ModInitializer {
 			PlayerCoordSharing.handleServerWaypoint(message.toString());
 
 			RallyPointDetection.handleRallyPointMessage(message.getString());
+
+			KillsChatDetection.checkKillsInChat(message.getString());
 
 			return PlayerCoordSharing.handleServerPing(message.toString());
 
@@ -200,13 +191,6 @@ public class HitboxPlus implements ModInitializer {
 			return PlayerCoordSharing.handlePlayerPing(message.toString(), sender);
 
 		});
-
-		DataSending.init();
-
-		ClientLifecycleEvents.CLIENT_STOPPING.register((client) -> {
-			// Code to run when the client shuts down
-			DataSending.sendData();
-		});
 	}
 
 
@@ -221,6 +205,25 @@ public class HitboxPlus implements ModInitializer {
 		Text nation = Text.literal("§l" + list.get(2) + " nation").formatted(Formatting.GOLD);
 
 		client.player.sendMessage(enemies.copy().append(allies).copy().append(nation), true);
+	}
+
+	public static void sendKdInHotbar() {
+
+		MinecraftClient client = MinecraftClient.getInstance();
+
+		if (client.player == null)  return;
+
+		ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+
+		// Format the kills, deaths, and KD ratio with two decimal places
+		Text kills = Text.literal("§l" + "Kills: " + config.kills + " ").formatted(Formatting.GREEN);
+		Text deaths = Text.literal("§l" + "Deaths: " + config.deaths + " ").formatted(Formatting.RED);
+
+		// Check to avoid division by zero and format KD to 2 decimal places
+		String kdRatio = config.deaths == 0 ? "∞" : String.format("%.2f", (double) config.kills / config.deaths);
+		Text kd = Text.literal("§l" + "KD: " + kdRatio).formatted(Formatting.GRAY);
+
+		client.player.sendMessage(kills.copy().append(deaths).copy().append(kd), true);
 	}
 
 	public static List<Integer> scan(){
@@ -281,8 +284,6 @@ public class HitboxPlus implements ModInitializer {
 					throw new RuntimeException(e);
 				}
 
-				DataTracking.locationPings++;
-
 				sendCoordCooldown = true;
 				//Parses the player coordinates into a string
 			}else {
@@ -306,8 +307,6 @@ public class HitboxPlus implements ModInitializer {
 			MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNo block found"), true );
 			return;
 		}
-
-		DataTracking.positionPings++;
 
 		int x = blockToPing.getX();
 		int y = blockToPing.getY();

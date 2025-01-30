@@ -1,6 +1,7 @@
 package io.github.pingisfun.hitboxplus.util;
 
 import io.github.pingisfun.hitboxplus.ModConfig;
+import io.github.pingisfun.hitboxplus.data.enums.HitboxDetectionType;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -21,12 +22,12 @@ import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 
-import javax.print.attribute.standard.MediaSize;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 
 public class ColorUtil {
@@ -59,7 +60,7 @@ public class ColorUtil {
 
 
                 //Custom Team logic
-                if (config.experimental){
+                if (config.autoHitboxColour){
 
                     return ColorUtil.decode(getPlayerPrefixColorHex((OtherClientPlayerEntity) entity),config.friend.alpha);
 
@@ -163,21 +164,27 @@ public class ColorUtil {
 
     public static int getPlayerPrefixColorHex(PlayerEntity player) {
         Text displayName = player.getDisplayName();
+        ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
-        // Search through each sibling to find the prefix color
-        for (Text sibling : displayName.getSiblings()) {
+        assert displayName != null;
+        if (config.autoNameHitboxColour.equals(HitboxDetectionType.PREFIX) ||
+                config.autoNameHitboxColour.equals(HitboxDetectionType.BOTH))
+        {
+            // Search through each sibling to find the prefix color
+            for (Text sibling : displayName.getSiblings()) {
 
-            if (sibling.toString().contains("§")){
+                Integer colour = mcColorCodesToHex(sibling);
 
-                int color = mcColorCodesToHex(sibling.toString());
-
-                if (color == 5){
-                    continue;
+                if (colour != null){
+                    return colour;
                 }
-
-
-                return color;
             }
+        }
+
+        Integer colour = mcColorCodesToHex(displayName);
+
+        if (colour != null){
+            return colour;
         }
 
         // Default to white if no color is found
@@ -207,11 +214,29 @@ public class ColorUtil {
         COLOR_CODE_TO_INT.put('f', 0xFFFFFF); // White
     }
 
-    public static int mcColorCodesToHex(String text) {
-        int color = 5;
+    public static Integer mcColorCodesToHex(Text text) {
+        int color = -1; // set as impossible value to detect at the end
         boolean colorCode = false;
 
-        for (char c : text.toCharArray()) {
+        Style style = text.getStyle();
+        if (style != null) {
+
+            TextColor textColor = style.getColor();
+
+            if (textColor != null) {
+                String hexCode = textColor.getHexCode();
+
+                if (hexCode != null){
+                    int hexColour = Integer.decode(hexCode);
+
+                    if (hexColour != 0){
+                        return hexColour;
+                    }
+                }
+            }
+        }
+
+        for (char c : text.toString().toCharArray()) {
             if (colorCode) {
                 if (COLOR_CODE_TO_INT.get(c) == null){
                     colorCode = false;
@@ -222,6 +247,10 @@ public class ColorUtil {
             } else if (c == '§') {
                 colorCode = true;
             }
+        }
+
+        if (color == -1){
+            return null;
         }
 
         return color;
