@@ -108,8 +108,10 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.CollapsibleObject //Special towns section for sounds and notifications
     public Sounds specialTowns = new Sounds();
 
+    @ConfigEntry.Category(value = "general")
     @ConfigEntry.Gui.Excluded
     public int kills = 0;
+    @ConfigEntry.Category(value = "general")
     @ConfigEntry.Gui.Excluded
     public int deaths = 0;
 

@@ -35,28 +35,30 @@ public class Encryption {
     }
 
     // Decrypt the number using the same key string and handle negative numbers
-    public static int decryptNumber(String key) {
+    public static Integer decryptNumber(String encryptedNumber) {
 
-        ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+        try {
+            ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+            String key = config.coordSharing.encryptionKey;
 
-        // Decode the Base64 string back to the original encrypted bytes
-        String decryptedBase64 = new String(Base64.getDecoder().decode(config.coordSharing.encryptionKey));
+            // Decode the encrypted number from Base64
+            String decryptedStr = new String(Base64.getDecoder().decode(encryptedNumber));
 
-        StringBuilder decryptedStr = new StringBuilder();
+            StringBuilder originalStr = new StringBuilder();
 
-        // Repeat or truncate the key to match the length of the encrypted string
-        for (int i = 0; i < decryptedBase64.length(); i++) {
-            char encryptedChar = decryptedBase64.charAt(i);
-            char keyChar = key.charAt(i % key.length());
-            // XOR the encrypted character with the key character to get the original number
-            char decryptedChar = (char) (encryptedChar ^ keyChar);
-            decryptedStr.append(decryptedChar);
+            // Decrypt each character using the key
+            for (int i = 0; i < decryptedStr.length(); i++) {
+                char encryptedChar = decryptedStr.charAt(i);
+                char keyChar = key.charAt(i % key.length()); // Repeat the key if necessary
+                // XOR the encrypted character with the key character to get the original number character
+                char decryptedChar = (char) (encryptedChar ^ keyChar);
+                originalStr.append(decryptedChar);
+            }
+
+            // Return the decrypted number as an integer
+            return Integer.parseInt(originalStr.toString());
+        } catch (NumberFormatException e) {
+            return null;
         }
-
-        // Handle negative numbers by checking for the '-' sign
-        String result = decryptedStr.toString();
-        // Return the positive number as an integer
-        return Integer.parseInt(result); // Return the negative number as an integer
     }
-
 }

@@ -2,6 +2,7 @@ package io.github.pingisfun.hitboxplus.waypoints;
 
 import com.mojang.authlib.GameProfile;
 import io.github.pingisfun.hitboxplus.HitboxPlus;
+import io.github.pingisfun.hitboxplus.util.Encryption;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import xaero.common.minimap.waypoints.Waypoint;
@@ -29,7 +30,6 @@ public class PlayerCoordSharing {
                 !message.contains("my coords (")) {
             return;
         }
-
 
         handleWaypointCreation(message, sender.getName());
     }
@@ -129,7 +129,7 @@ public class PlayerCoordSharing {
 
 
     private static void handleWaypointCreation(String message, String playerName) {
-        String regex = "my coords \\s*\\((-?\\d+),\\s*(-?\\d+),\\s*(-?\\d+)\\)";
+        String regex = "my coords \\s*\\(([^,]+),\\s*([^,]+),\\s*([^\\)]+)\\)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(message);
 
@@ -145,7 +145,15 @@ public class PlayerCoordSharing {
             makePlayerWaypoint(x, y, z, playerName);
 
         } catch (NumberFormatException e) {
-            MinecraftClient.getInstance().player.sendMessage(Text.of("Cannot parse coords"));
+            if (!message.contains("[E]") || config.coordSharing.encryptionKey.isBlank()) return;
+
+            Integer x = Encryption.decryptNumber(matcher.group(1));
+            Integer y = Encryption.decryptNumber(matcher.group(2));
+            Integer z = Encryption.decryptNumber(matcher.group(3));
+
+            if (x == null || y == null || z == null) return;
+
+            makePlayerWaypoint(x, y, z, playerName);
         }
     }
 
@@ -166,7 +174,7 @@ public class PlayerCoordSharing {
     }
 
     private static void handlePingCreation(String message, String playerName) {
-        String regex = "pinged location \\s*\\{(-?\\d+),\\s*(-?\\d+),\\s*(-?\\d+)}";
+        String regex = "pinged location \\s*\\{([^,]+),\\s*([^,]+),\\s*([^}]+)}";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(message);
 
@@ -182,7 +190,15 @@ public class PlayerCoordSharing {
             makePlayerPing(x, y, z, playerName);
 
         } catch (NumberFormatException e) {
-            MinecraftClient.getInstance().player.sendMessage(Text.of("Cannot parse coords"));
+            if (!message.contains("[E]") || config.coordSharing.encryptionKey.isBlank()) return;
+
+            Integer x = Encryption.decryptNumber(matcher.group(1));
+            Integer y = Encryption.decryptNumber(matcher.group(2));
+            Integer z = Encryption.decryptNumber(matcher.group(3));
+
+            if (x == null || y == null || z == null) return;
+
+            makePlayerPing(x, y, z, playerName);
         }
     }
 

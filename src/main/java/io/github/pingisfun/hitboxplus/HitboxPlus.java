@@ -3,6 +3,7 @@ package io.github.pingisfun.hitboxplus;
 import io.github.pingisfun.hitboxplus.commands.SetLocationCommand;
 import io.github.pingisfun.hitboxplus.datatracking.KillsChatDetection;
 import io.github.pingisfun.hitboxplus.util.ColorUtil;
+import io.github.pingisfun.hitboxplus.util.Encryption;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsBrokenDetector;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsPlacedDetector;
 import io.github.pingisfun.hitboxplus.waypoints.PlayerCoordSharing;
@@ -265,7 +266,8 @@ public class HitboxPlus implements ModInitializer {
 
 	public static void sendCoordsInChat(){
 
-		MinecraftClient mcClient = MinecraftClient.getInstance();
+		ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+
 		int x = (int) MinecraftClient.getInstance().player.getX();
 		int y = (int) MinecraftClient.getInstance().player.getY(); // Get the players coordinates
 		int z = (int) MinecraftClient.getInstance().player.getZ();
@@ -275,7 +277,15 @@ public class HitboxPlus implements ModInitializer {
 			// Make a thread with a timer to auto delete the waypoint
 
 			if(sendCoordCooldown){
-				MinecraftClient.getInstance().getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
+
+				if (!config.coordSharing.encryptionKey.isBlank()){
+					MinecraftClient.getInstance().getNetworkHandler().
+							sendChatMessage("my coords (" + Encryption.encryptNumber(x) + "," +
+									Encryption.encryptNumber(y) + "," + Encryption.encryptNumber(z) + ") [E]");
+				} else {
+					MinecraftClient.getInstance().getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
+				}
+
 				sendCoordCooldown = false;// make sure the cooldown is off
 
 				try {

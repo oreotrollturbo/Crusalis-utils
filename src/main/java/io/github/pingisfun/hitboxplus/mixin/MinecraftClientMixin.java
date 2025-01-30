@@ -43,6 +43,7 @@ public abstract class MinecraftClientMixin {
                 return;
             }
             String name = entityHit.getEntity().getName().getContent().toString();
+            name = name.replace("literal{", "").replace("}", "");
             boolean wasEnemy = config.enemy.list.remove(name);
             boolean wasFriend = config.friend.list.remove(name);
             // none -> friend -> enemy ->> none -> friend -> enemy ->>
