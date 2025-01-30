@@ -13,4 +13,10 @@ public class ConfEnums {
         WITHIN,
         OUT_OF
     }
+
+    public enum HitboxDetectionType {
+        BOTH,
+        PREFIX,
+        NAME
+    }
 }

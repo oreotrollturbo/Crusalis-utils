@@ -1,7 +1,6 @@
 package io.github.pingisfun.hitboxplus.util;
 
 import io.github.pingisfun.hitboxplus.ModConfig;
-import io.github.pingisfun.hitboxplus.data.enums.HitboxDetectionType;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -167,8 +166,8 @@ public class ColorUtil {
         ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
         assert displayName != null;
-        if (config.autoNameHitboxColour.equals(HitboxDetectionType.PREFIX) ||
-                config.autoNameHitboxColour.equals(HitboxDetectionType.BOTH))
+        if (config.autoNameHitboxColour.equals(ConfEnums.HitboxDetectionType.PREFIX) ||
+                config.autoNameHitboxColour.equals(ConfEnums.HitboxDetectionType.BOTH))
         {
             // Search through each sibling to find the prefix color
             for (Text sibling : displayName.getSiblings()) {
@@ -229,7 +228,7 @@ public class ColorUtil {
                 if (hexCode != null){
                     int hexColour = Integer.decode(hexCode);
 
-                    if (hexColour != 0){
+                    if (hexColour != 16777215){ // White colour , ignore
                         return hexColour;
                     }
                 }

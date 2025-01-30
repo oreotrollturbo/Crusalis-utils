@@ -1,6 +1,5 @@
 package io.github.pingisfun.hitboxplus;
 
-import io.github.pingisfun.hitboxplus.data.enums.HitboxDetectionType;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -85,8 +84,9 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category(value = "teamColor")
     public boolean autoHitboxColour = true;
 
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     @ConfigEntry.Category(value = "teamColor")
-    public HitboxDetectionType autoNameHitboxColour = HitboxDetectionType.BOTH;
+    public ConfEnums.HitboxDetectionType autoNameHitboxColour = ConfEnums.HitboxDetectionType.BOTH;
 
     @ConfigEntry.Category(value = "teamColor")
     @ConfigEntry.Gui.CollapsibleObject  //The sections with friendly teams
@@ -108,16 +108,8 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Gui.CollapsibleObject //Special towns section for sounds and notifications
     public Sounds specialTowns = new Sounds();
 
-    @ConfigEntry.Category(value = "analytics")
-    public boolean areAnalyticsDisabled = false;
-
-    @ConfigEntry.Category(value = "analytics")
-    public boolean playSoundOnKill = false;
-
-    @ConfigEntry.Category(value = "analytics")
     @ConfigEntry.Gui.Excluded
     public int kills = 0;
-    @ConfigEntry.Category(value = "analytics")
     @ConfigEntry.Gui.Excluded
     public int deaths = 0;
 
@@ -227,6 +219,9 @@ public class ModConfig implements ConfigData {
         public boolean acceptCoordsFromNation = true;
         public boolean acceptCoordsFromTown = true;
         public boolean acceptCoordsFromLocal = false;
+
+        @ConfigEntry.Gui.Tooltip
+        public String encryptionKey = "";
     }
 
     public static class PlayerLocation{

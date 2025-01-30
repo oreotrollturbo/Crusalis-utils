@@ -3,8 +3,6 @@ package io.github.pingisfun.hitboxplus.datatracking;
 import io.github.pingisfun.hitboxplus.ModConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.sound.SoundEvents;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -45,10 +43,6 @@ public class KillsChatDetection {
 
                     config.kills++;
 
-                    if (config.playSoundOnKill){
-                        playSound();
-                    }
-
                     AutoConfig.getConfigHolder(ModConfig.class).save();
                 }
 
@@ -61,16 +55,5 @@ public class KillsChatDetection {
     private static boolean isCustomChatMessage(String message) {
         return message.contains("[Town]") || message.contains("[Local]") || message.contains("[Nation]") || message.contains("[Ally]")
                 || message.contains("[War]");
-    }
-
-    public static void playSound() {
-        MinecraftClient client = MinecraftClient.getInstance();
-
-        if (client.player != null) {
-            client.getSoundManager().play(PositionedSoundInstance.master(
-                    SoundEvents.BLOCK_NOTE_BLOCK_PLING, // Replace with your desired sound
-                    1.0F // Volume
-            ));
-        }
     }
 }
