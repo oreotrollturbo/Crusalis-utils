@@ -164,6 +164,9 @@
   "text.autoconfig.hitboxplus.option.coordSharing.acceptCoordsFromTown": "Accept waypoints from Town Chat",
   "text.autoconfig.hitboxplus.option.coordSharing.acceptCoordsFromLocal": "Accept waypoints from Local Chat",
 
+  "text.autoconfig.hitboxplus.option.coordSharing.encryptionKey": "Encryption key",
+  "text.autoconfig.hitboxplus.option.coordSharing.encryptionKey.@Tooltip": "Encrypts your coordinates, DONT MAKE IT TOO LONG",
+
 
 
   "text.autoconfig.hitboxplus.option.enemy.acceptCoordsFromFriends": "OUT OF ORDER",
