@@ -89,12 +89,12 @@ public class FlagsBrokenDetector {
             int z = Integer.parseInt(matcher.group(2));
             String town = matcher.group(3); //Get the town name
 
-            if (config.pingTowns.oreoModList.contains(town)) { // If the town is within your towns list
+            if (config.flagToWayPointTownList.contains(town)) { // If the town is within your towns list
                 assert getWaypointList() != null;
                 getWaypointList().removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == x &&
                         ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); //Remove any getWaypointList() that are within the chunk from the message
 
-                if (config.specialTowns.showNotifications && config.specialTowns.soundList.contains(town)) {
+                if (config.flagToWaypointAdvanced.showNotifications) {
                     assert MinecraftClient.getInstance().player != null;
                     MinecraftClient.getInstance().player.sendMessage(Text.literal("§4 Chunk from " + town + " has been captured"), true);
                 } //If yoy have the notifications setting enabled and the town is a "special town"
@@ -120,7 +120,7 @@ public class FlagsBrokenDetector {
             int z = Integer.parseInt(matcher.group(2));
             String town = matcher.group(3); // Get the town
 
-            if (config.pingTowns.enemyTownList.contains(town)) { // if the town is in the enemy town list
+            if (config.flagToWayPointTownList.contains(town)) { // if the town is in the enemy town list
                 assert getWaypointList() != null;
                 getWaypointList().removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == x &&
                         ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); // Remove the waypoint if it's within the chunk

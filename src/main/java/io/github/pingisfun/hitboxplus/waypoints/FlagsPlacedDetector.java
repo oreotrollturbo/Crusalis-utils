@@ -45,13 +45,9 @@ public class FlagsPlacedDetector {
                 waypointSymbol = "[Y]";
 
                 //DataTracking.flagsPlaced++;
-
-                if (!config.pingTowns.enemyTownList.contains(town)) {
-                    config.pingTowns.enemyTownList.add(town);// Adds town as enemy when you attack it
-                }
             }
 
-            if (config.pingTowns.isPingingEnabled && config.pingTowns.oreoModList.contains(town)) { //If flag waypoints is enabled
+            if (config.isPingingEnabled && config.flagToWayPointTownList.contains(town)) { //If flag waypoints is enabled
 
                 assert MinecraftClient.getInstance().player != null;
 
@@ -59,7 +55,7 @@ public class FlagsPlacedDetector {
                 double playerZ = MinecraftClient.getInstance().player.getZ(); // Get the players coords
 
 
-                if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
+                if (config.flagToWaypointAdvanced.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                     // make sure the town is within defined range or the setting is disabled
 
                     makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, waypointSymbol,0,true); //Calls the function that makes thw waypoint
@@ -83,14 +79,14 @@ public class FlagsPlacedDetector {
             int y = Integer.parseInt(matcher.group(3)); //Detect the coordinates
             int z = Integer.parseInt(matcher.group(4));
 
-            if (config.pingTowns.isPingingEnabled && config.pingTowns.enemyTownList.contains(town)) {
+            if (config.isPingingEnabled && config.flagToWayPointTownList.contains(town)) {
 
                 assert MinecraftClient.getInstance().player != null;
 
                 double playerX = MinecraftClient.getInstance().player.getX();
                 double playerZ = MinecraftClient.getInstance().player.getZ(); //get the players coordinates
 
-                if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
+                if (config.flagToWaypointAdvanced.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                     //Make sure there is no flag range limit or the flag is within the limit
 
                     makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, "[F]",0,true); //Calls the function that makes thw waypoint

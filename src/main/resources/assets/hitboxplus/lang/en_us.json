@@ -102,7 +102,7 @@
   "text.autoconfig.hitboxplus.option.misc.tridentEntity.alpha": "Transparency",
 
 
-  "text.autoconfig.hitboxplus.option.autoHitboxColour": "§l Automatic colour detection",
+  "text.autoconfig.hitboxplus.option.autoHitboxColour": "§lAutomatic colour detection",
   "text.autoconfig.hitboxplus.option.autoNameHitboxColour": "Detect colour from name",
   "text.autoconfig.hitboxplus.option.friendteam": "§2§l Friendly Teams",
   "text.autoconfig.hitboxplus.option.enemyteam": "§4§l Enemy Teams",
@@ -124,26 +124,24 @@
   "text.autoconfig.hitboxplus.option.enemyteam.oreolist": "Enemy Teams List",
 
 
-  "text.autoconfig.hitboxplus.option.pingTowns": "§3§l Flag to waypoint options",
-  "text.autoconfig.hitboxplus.option.pingTowns.isPingingEnabled": "Enable flag waypoints",
-  "text.autoconfig.hitboxplus.option.pingTowns.oreoModList": "Friendly town list",
-  "text.autoconfig.hitboxplus.option.pingTowns.enemyTownList": "Enemy town list",
-  "text.autoconfig.hitboxplus.option.pingTowns.yOffset": "Waypoint Y offset (altitude)",
-  "text.autoconfig.hitboxplus.option.pingTowns.removeCooldown": "Time until waypoint deletion (in seconds)",
-  "text.autoconfig.hitboxplus.option.pingTowns.limitRange": "Limit flag waypoints to a radius",
-  "text.autoconfig.hitboxplus.option.pingTowns.pingDistanceLimit": "Max distance radius (in blocks)",
+  "text.autoconfig.hitboxplus.option.isPingingEnabled": "Enable flag waypoints",
+  "text.autoconfig.hitboxplus.option.flagToWayPointTownList": "Waypoint town list",
+  "text.autoconfig.hitboxplus.option.yOffset": "Waypoint Y offset (altitude)",
+  "text.autoconfig.hitboxplus.option.removeCooldown": "Time until waypoint deletion (in seconds)",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.limitRange": "Limit flag waypoints to a radius",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.pingDistanceLimit": "Max distance radius (in blocks)",
 
-  "text.autoconfig.hitboxplus.option.specialTowns": "§1§l Special waypoint settings",
-  "text.autoconfig.hitboxplus.option.specialTowns.playFlagSounds": "Play a sound when marked cities are flagged",
-  "text.autoconfig.hitboxplus.option.specialTowns.showNotifications": "Show a notification on chunk capture",
-  "text.autoconfig.hitboxplus.option.specialTowns.pitch": "Sound pitch",
-  "text.autoconfig.hitboxplus.option.specialTowns.volume": "Sound volume",
-  "text.autoconfig.hitboxplus.option.specialTowns.soundList": "List of special towns",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced": "§1§lAdvanced waypoint settings",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.playFlagSounds": "Play a sound when marked cities are flagged",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.showNotifications": "Show a notification on chunk capture",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.pitch": "Sound pitch",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.volume": "Sound volume",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.soundList": "List of special towns",
 
-  "text.autoconfig.hitboxplus.option.pingTowns.isPingingEnabled.@Tooltip": "Enables the rest of the settings",
-  "text.autoconfig.hitboxplus.option.pingTowns.yOffset.@Tooltip": "Set how many blocks above the flag the waypoint will appear",
-  "text.autoconfig.hitboxplus.option.pingTowns.limitRange.@Tooltip": "Set an area within which waypoints can appear",
-  "text.autoconfig.hitboxplus.option.specialTowns.showNotifications.@Tooltip": "Show a notification when a special towns chunk gets capped",
+  "text.autoconfig.hitboxplus.option.isPingingEnabled.@Tooltip": "Enables the rest of the settings",
+  "text.autoconfig.hitboxplus.option.yOffset.@Tooltip": "Set how many blocks above the flag the waypoint will appear",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.limitRange.@Tooltip": "Set an area around you within which waypoints can appear",
+  "text.autoconfig.hitboxplus.option.flagToWaypointAdvanced.showNotifications.@Tooltip": "Show a notification when a towns chunk gets capped",
 
   "text.autoconfig.hitboxplus.option.coordSharing": "§b§l Waypoint sharing",
 

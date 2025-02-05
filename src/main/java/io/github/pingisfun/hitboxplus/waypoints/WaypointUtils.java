@@ -7,7 +7,6 @@ import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import xaero.common.XaeroMinimapSession;
 import xaero.common.minimap.waypoints.Waypoint;
 import xaero.common.minimap.waypoints.WaypointSet;
@@ -26,7 +25,7 @@ public class WaypointUtils {
 
     public static int color = 0;
 
-    static int yOffset = config.pingTowns.yOffset;
+    static int yOffset = config.yOffset;
 
     //########################################################################
     //                                                                       #
@@ -43,10 +42,10 @@ public class WaypointUtils {
         int distance = (int) hypot(trueX,trueZ); //Calculate the distance thanks to the pythagorian theorem
         // keeping it simple with just integers
 
-        if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.WITHIN){ // If the setting is set to WITHIN
-            return distance <= config.pingTowns.pingDistanceLimit; // Return true if it is within the distance
+        if (config.flagToWaypointAdvanced.limitRange == ConfEnums.FlagLimiter.WITHIN){ // If the setting is set to WITHIN
+            return distance <= config.flagToWaypointAdvanced.pingDistanceLimit; // Return true if it is within the distance
         }else {//This one is when you have the setting to OUT_OF
-            return distance > config.pingTowns.pingDistanceLimit; // Return true if it is out of the distance
+            return distance > config.flagToWaypointAdvanced.pingDistanceLimit; // Return true if it is out of the distance
         }
     }
 
@@ -78,13 +77,13 @@ public class WaypointUtils {
 
         Waypoint lastWaypoint = waypoints.get(waypoints.size() - 1); //Get the waypoint in the thread to delete it later
 
-        if (config.specialTowns.playFlagSounds && config.specialTowns.soundList.contains(town)) { //play a sound if the setting is on and the list has the town
+        if (config.flagToWaypointAdvanced.playFlagSounds) { //play a sound if the setting is on and the list has the town
             assert MinecraftClient.getInstance().player != null;
-            MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_BELL_USE, 1, config.specialTowns.pitch);
+            MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_BELL_USE, 1, config.flagToWaypointAdvanced.pitch);
         }
 
         if (time == 0){
-            deleteWaypointInTime(lastWaypoint ,config.pingTowns.removeCooldown);
+            deleteWaypointInTime(lastWaypoint ,config.removeCooldown);
         }else {
             deleteWaypointInTime(lastWaypoint ,time);
         }

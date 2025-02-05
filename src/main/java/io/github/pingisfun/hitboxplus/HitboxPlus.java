@@ -58,9 +58,6 @@ public class HitboxPlus implements ModInitializer {
 
 	private boolean wasDead = false;
 
-	private boolean hasJoined = false;
-
-
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.

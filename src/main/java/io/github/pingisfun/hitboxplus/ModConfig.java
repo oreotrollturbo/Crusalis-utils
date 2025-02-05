@@ -101,12 +101,21 @@ public class ModConfig implements ConfigData {
     public PlayerOreoListConfig prefix = new PlayerOreoListConfig();
 
     @ConfigEntry.Category(value = "flagToWaypoint")
-    @ConfigEntry.Gui.CollapsibleObject//The huge section with the flag to waypoint settings
-    public Oreo pingTowns = new Oreo();
+    @ConfigEntry.Gui.Tooltip
+    public boolean isPingingEnabled = true;
+
+    @ConfigEntry.Category(value = "flagToWaypoint")
+    public int yOffset = 50;
+
+    @ConfigEntry.Category(value = "flagToWaypoint")
+    public int removeCooldown = 240;
+
+    @ConfigEntry.Category(value = "flagToWaypoint")
+    public List<String> flagToWayPointTownList = new ArrayList<>();
 
     @ConfigEntry.Category(value = "flagToWaypoint")
     @ConfigEntry.Gui.CollapsibleObject //Special towns section for sounds and notifications
-    public Sounds specialTowns = new Sounds();
+    public FlagToWaypointAdvanced flagToWaypointAdvanced = new FlagToWaypointAdvanced();
 
     @ConfigEntry.Category(value = "general")
     @ConfigEntry.Gui.Excluded
@@ -259,31 +268,22 @@ public class ModConfig implements ConfigData {
         public List<String> oreolist = new ArrayList<>(); //This is just for a list
     }
 
-    public static class Oreo {
-        @ConfigEntry.Gui.TransitiveObject
+    public static class FlagToWaypoint {
 
-        @ConfigEntry.Gui.Tooltip
-        public boolean isPingingEnabled = true;
 
-        @ConfigEntry.Gui.Tooltip
-        public int yOffset = 50;
 
-        public int removeCooldown = 240;
 
-        public List<String> enemyTownList = new ArrayList<>();
-        public List<String> oreoModList = new ArrayList<>();
+    }
+
+    public static class FlagToWaypointAdvanced { //This is for the special town stuff
 
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
         @ConfigEntry.Gui.Tooltip
         public ConfEnums.FlagLimiter limitRange = ConfEnums.FlagLimiter.DISABLED;
 
         public int pingDistanceLimit = 600;
-    }
 
-    public static class Sounds { //This is for the special town stuff
         public boolean playFlagSounds = false;
-
-        public List<String> soundList = new ArrayList<>();
 
         @ConfigEntry.BoundedDiscrete(max = 5, min = 1)
         public int pitch = 1;
